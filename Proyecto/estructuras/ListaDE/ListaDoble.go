@@ -86,7 +86,7 @@ func (lista *ListaDoble) ReporteEstudiantes(){
 	contador := 0
 	texto += "nodonull1->nodo0 [dir=back];\n"
 	for i := 0; i < lista.Tamanio; i++ {
-		texto += "nodo" + strconv.Itoa(i) + "[label=\"" + strconv.Itoa(aux.Estudiante.Carnet) + "\\n" + aux.Estudiante.Nombre + "\"];\n"
+		texto += "nodo" + strconv.Itoa(i) + "[label=\"" + "Nombre: " + aux.Estudiante.Nombre + "\\n" + "Carnet: " + strconv.Itoa(aux.Estudiante.Carnet) + "\"];\n"
 		aux = aux.Siguiente
 	}
 	for i := 0; i < (lista.Tamanio - 1); i++ {

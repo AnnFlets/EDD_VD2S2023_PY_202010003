@@ -15,6 +15,11 @@ type Arbol struct {
 }
 
 func (arbol *Arbol) LeerJsonCursos(ruta string) {
+	_, err := os.Open(ruta)
+	if err != nil{
+		fmt.Println("[ERROR]: No se pudo abrir el archivo")
+		return
+	}
 	contenido, err := os.ReadFile(ruta)
 	if err != nil {
 		log.Fatal("[ERROR] Problemas al leer el archivo:", err)

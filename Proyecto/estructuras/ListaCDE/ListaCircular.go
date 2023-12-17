@@ -108,7 +108,7 @@ func (lista *ListaCircular) ReporteTutores() {
 	aux := lista.Inicio
 	contador := 0
 	for i := 0; i < lista.Tamanio; i++ {
-		texto += "nodo" + strconv.Itoa(i) + "[label=\"" + strconv.Itoa(aux.Tutor.Carnet) + "\"];\n"
+		texto += "nodo" + strconv.Itoa(i) + "[label=\"" + "Nombre: " + aux.Tutor.Nombre + "\\n" + "Carnet: " + strconv.Itoa(aux.Tutor.Carnet) + "\"];\n"
 		aux = aux.Siguiente
 	}
 	for i := 0; i < (lista.Tamanio - 1); i++ {

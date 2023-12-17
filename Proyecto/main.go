@@ -223,7 +223,7 @@ func AsignarCurso() {
 					break
 				}
 				matriz_dispersa.InsertarElemento(estudiante_curso, tutor_curso.Tutor.Carnet, curso_asignar)
-				fmt.Println("Asignación exitosa")
+				fmt.Println("Asignación exitosa, tutor asignado:", tutor_curso.Tutor.Nombre)
 				break
 			} else {
 				fmt.Println("[ERROR]: No hay tutores disponibles para el curso ingresado")
