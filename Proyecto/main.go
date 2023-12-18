@@ -21,6 +21,7 @@ func main() {
 	opcion := 0
 	menu_principal := true
 	for menu_principal {
+		fmt.Print("\n\n")
 		fmt.Println("========= MENÚ =========")
 		fmt.Println("| 1. Inicio de sesión  |")
 		fmt.Println("| 2. Salir             |")
@@ -38,6 +39,7 @@ func main() {
 }
 
 func Login(){
+	fmt.Print("\n\n")
 	usuario := ""
 	contrasena := ""
 	fmt.Println("========== LOGIN ==========")
@@ -59,6 +61,7 @@ func MenuAdministrador(){
 	opcion := 0
 	menu_admin := true
 	for menu_admin {
+		fmt.Print("\n\n")
 		fmt.Println("========= MENÚ ADMINISTRADOR ========")
 		fmt.Println("| 1. Carga de estudiantes tutores   |")
 		fmt.Println("| 2. Carga de estudiantes           |")
@@ -89,6 +92,7 @@ func MenuAdministrador(){
 }
 
 func CargarTutores() {
+	fmt.Print("\n\n")
 	ruta := ""
 	fmt.Println("- CARGAR TUTORES -")
 	fmt.Println("Ingrese el nombre del archivo: ")
@@ -97,6 +101,7 @@ func CargarTutores() {
 }
 
 func CargarEstudiantes() {
+	fmt.Print("\n\n")
 	ruta := ""
 	fmt.Println("- CARGAR ESTUDIANTES -")
 	fmt.Println("Ingrese el nombre del archivo: ")
@@ -105,6 +110,7 @@ func CargarEstudiantes() {
 }
 
 func CargarCursos() {
+	fmt.Print("\n\n")
 	ruta := ""
 	fmt.Println("- CARGAR CURSOS -")
 	fmt.Println("Ingrese el nombre del archivo: ")
@@ -116,6 +122,7 @@ func ControlTutores() {
 	opcion := 0
 	menu_control_tutores := true
 	for menu_control_tutores {
+		fmt.Print("\n\n")
 		fmt.Println("- CONTROL TUTORES -")
 		cola_prioridad.Mostrar_Primero_Cola()
 		fmt.Println("================================")
@@ -140,6 +147,7 @@ func ControlTutores() {
 			}
 			cola_prioridad.Descolar()
 		} else if opcion == 2 {
+			fmt.Println("Se rechazó al tutor")
 			cola_prioridad.Descolar()
 		} else if opcion == 3 {
 			menu_control_tutores = false
@@ -153,6 +161,7 @@ func Reportes() {
 	opcion := 0
 	menu_reportes := true
 	for menu_reportes {
+		fmt.Print("\n\n")
 		fmt.Println("============= REPORTES ============")
 		fmt.Println("| 1. Reporte de alumnos           |")
 		fmt.Println("| 2. Reporte de tutores aceptados |")
@@ -183,6 +192,7 @@ func MenuEstudiante(){
 	opcion := 0
 	menu_estudiante := true
 	for menu_estudiante {
+		fmt.Print("\n\n")
 		fmt.Println("Bienvenido:", estudiante_logeado)
 		fmt.Println("======= MENÚ ESTUDIANTE ======")
 		fmt.Println("| 1. Ver tutores disponibles |")
@@ -193,6 +203,7 @@ func MenuEstudiante(){
 		fmt.Scanln(&opcion)
 		switch opcion{
 		case 1:
+			fmt.Print("\n\n")
 			fmt.Println("- TUTORES DISPONIBLES -")
 			if lista_circular.Tamanio == 0{
 				fmt.Println("No hay tutores disponibles")
@@ -213,6 +224,8 @@ func AsignarCurso() {
 	curso_asignar := ""
 	menu_asignar_curso := true
 	for menu_asignar_curso {
+		fmt.Print("\n\n")
+		fmt.Println("- ASIGNAR CURSO -")
 		fmt.Println("Escriba el código del curso a asignar:")
 		fmt.Scanln(&curso_asignar)
 		if arbol_avl.BuscarCurso(curso_asignar) {

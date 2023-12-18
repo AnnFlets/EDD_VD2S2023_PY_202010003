@@ -13,6 +13,7 @@ type Cola struct {
 	Tamanio int
 }
 
+//Función para leer el archivo csv con los datos de los tutores y agregarlos a la cola
 func (cola *Cola) LeerCSVTutores(ruta string){
 	archivo, err := os.Open(ruta)
 	if err != nil{
@@ -21,9 +22,11 @@ func (cola *Cola) LeerCSVTutores(ruta string){
 	}
 	defer archivo.Close()
 	contenido := csv.NewReader(archivo)
+	//Especificar el delimitador del archivo
 	contenido.Comma = ','
 	encabezado := true
 	for {
+		//Lee una línea del archivo
 		linea, err := contenido.Read()
 		if err == io.EOF{
 			break
@@ -43,6 +46,7 @@ func (cola *Cola) LeerCSVTutores(ruta string){
 	fmt.Println("Tutores cargados con éxito")
 }
 
+//Función para definir la prioridad del tutor e insertarlo en la cola según corresponda
 func (cola *Cola) Encolar(carnet int, nombre string, curso string, nota int){
 	nuevoTutor := &Tutor{Carnet: carnet, Nombre: nombre, Curso: curso, Nota: nota}
 	nuevoNodo := &NodoCola{Tutor: nuevoTutor, Siguiente: nil, Prioridad: 0}
@@ -61,6 +65,10 @@ func (cola *Cola) Encolar(carnet int, nombre string, curso string, nota int){
 		cola.Primero = nuevoNodo
 		cola.Tamanio++
 	}else{
+		/*
+		IF -> Si el valor de la prioridad del primero de la cola es mayor a la del tutor a insertar
+		ELSE IF ->  Si el valor de la prioridad del primero de la cola es menor a la del tutor a insertar, pero el primero de la cola es el único elemento de la cola.
+		*/
 		if cola.Primero.Prioridad > nuevoNodo.Prioridad{
 			nuevoNodo.Siguiente = cola.Primero
 			cola.Primero = nuevoNodo
@@ -72,7 +80,12 @@ func (cola *Cola) Encolar(carnet int, nombre string, curso string, nota int){
 			return
 		}
 		aux := cola.Primero
+		//Se ejecuta hasta llegar al último nodo de la cola
 		for aux.Siguiente != nil{
+			/*
+			IF -> Si el valor de la prioridad del siguiente es mayor a la del tutor a insertar y el valor de la prioridad del anterior es igual o menor a la del tutor a insertar
+			ELSE ->  Si el valor de la prioridad del siguiente es menor a la del tutor a insertar
+			*/
 			if aux.Siguiente.Prioridad > nuevoNodo.Prioridad && (aux.Prioridad == nuevoNodo.Prioridad || aux.Prioridad < nuevoNodo.Prioridad){
 				nuevoNodo.Siguiente = aux.Siguiente
 				aux.Siguiente = nuevoNodo
@@ -82,11 +95,13 @@ func (cola *Cola) Encolar(carnet int, nombre string, curso string, nota int){
 				aux = aux.Siguiente
 			}
 		}
+		//Si se llega al último nodo, se inserta al nuevo tutor como el siguiente de este (de último)
 		aux.Siguiente = nuevoNodo
 		cola.Tamanio++
 	}
 }
 
+//Función para mostrar los datos del primer tutor de la cola y el carnet del siguiente
 func (cola *Cola) Mostrar_Primero_Cola(){
 	if cola.Tamanio == 0{
 		fmt.Println("No hay tutores")
@@ -104,6 +119,7 @@ func (cola *Cola) Mostrar_Primero_Cola(){
 	}
 }
 
+//Función para sacar al primer tutor de la cola
 func (cola *Cola) Descolar(){
 	if cola.Tamanio == 0{
 		fmt.Println("No hay tutores en la cola")

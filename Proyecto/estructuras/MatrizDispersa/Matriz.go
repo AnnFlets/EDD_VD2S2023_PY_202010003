@@ -12,9 +12,17 @@ type Matriz struct {
 	Cantidad_Tutores int
 }
 
+//Función que inserta el elemento correspondiente a la asignación en la matriz dispersa
 func (matriz *Matriz) InsertarElemento(carnet_estudiante int, carnet_tutor int, curso string) {
 	nodo_columna := matriz.buscarColumna(carnet_tutor, curso)
 	nodo_fila := matriz.buscarFila(carnet_estudiante)
+	/*
+	IF -> Si la columna y la fila no se encontraron (no existen)
+	ELSE IF 1 -> Si la columna existe y la fila no existe
+	ELSE IF 2 -> Si la columna no existe y la fila sí existe
+	ELSE IF 3 -> Si la columna y la fila sí existen
+	ELSE -> Otro caso
+	*/
 	if nodo_columna == nil && nodo_fila == nil {
 		nodo_columna = matriz.nuevaColumna(matriz.Cantidad_Tutores, carnet_tutor, curso)
 		nodo_fila = matriz.nuevaFila(matriz.Cantidad_Estudiantes, carnet_estudiante, curso)
@@ -44,6 +52,11 @@ func (matriz *Matriz) InsertarElemento(carnet_estudiante int, carnet_tutor int, 
 	}
 }
 
+/*
+Función que recorre el encabezado de las columnas, empezando desde la raiz hacia la derecha 
+y busca si algún nodo almacena el mismo carnet de un tutor y curso a los enviados como parámetros.
+Retorna el nodo con datos iguales si este es encontrado, de lo contrario retorna nil
+*/
 func (matriz *Matriz) buscarColumna(carnet_tutor int, curso string) *NodoMatriz {
 	aux := matriz.Raiz
 	for aux != nil {
@@ -55,6 +68,11 @@ func (matriz *Matriz) buscarColumna(carnet_tutor int, curso string) *NodoMatriz 
 	return nil
 }
 
+/*
+Función que recorre el encabezado de las filas, empezando desde la raiz hacia abajo y busca
+si algún nodo almacena el mismo carnet de estudiante al enviado como parámetro.
+Retorna el nodo con dato igual si este es encontrado, de lo contrario retorna nil
+*/
 func (matriz *Matriz) buscarFila(carnet_estudiante int) *NodoMatriz {
 	aux := matriz.Raiz
 	for aux != nil {
@@ -66,11 +84,49 @@ func (matriz *Matriz) buscarFila(carnet_estudiante int) *NodoMatriz {
 	return nil
 }
 
+/*
+Función que crea el nodo en el encabezado de las columnas, recibiendo como uno de los parámetros
+la posición en "x" que debe ocupar el nodo (la cual corresponde a la cantidad de tutores
+existentes en el encabezado), su posición en "y" siempre será -1 por ser el encabezado.
+Luego inserta el nodo en la columna de la matriz y retorna el nodo.
+*/
+func (matriz *Matriz) nuevaColumna(x int, carnet_tutor int, curso string) *NodoMatriz {
+	nuevoNodo := &NodoMatriz{PosX: x, PosY: -1, Dato: &Dato{Carnet_Tutor: carnet_tutor, Carnet_Estudiante: 0, Curso: curso}}
+	columna := matriz.insertarColumna(nuevoNodo, matriz.Raiz)
+	return columna
+}
+
+/*
+Función que crea el nodo en el encabezado de las filas, recibiendo como uno de los parámetros
+la posición en "y" que debe ocupar el nodo (la cual corresponde a la cantidad de estudiantes
+existentes en el encabezado), su posición en "x" siempre será -1 por ser el encabezado.
+Luego inserta el nodo en la fila de la matriz y retorna el nodo.
+*/
+func (matriz *Matriz) nuevaFila(y int, carnet_estudiante int, curso string) *NodoMatriz {
+	nuevoNodo := &NodoMatriz{PosX: -1, PosY: y, Dato: &Dato{Carnet_Tutor: 0, Carnet_Estudiante: carnet_estudiante, Curso: curso}}
+	fila := matriz.insertarFila(nuevoNodo, matriz.Raiz)
+	return fila
+}
+
+/*
+Función para insertar un nodo en la matriz dispersa, asignando los apuntadores para las columnas
+"Siguiente" y "Anterior" ("Derecha" e "Izquierda")
+*/
 func (matriz *Matriz) insertarColumna(nuevoNodo *NodoMatriz, nodoRaiz *NodoMatriz) *NodoMatriz {
+	//Variable temporal que contiene el nodo encabezado de la fila o la raiz de la matriz
 	temp := nodoRaiz
+	//Para identificar si se va a insertar ordenado o no
 	piv := false
+	//Se recorren las columnas de temp hacia la derecha
 	for {
+		/*
+		IF -> Si la posición en "x" de temp es igual a la posición en "x" del nodo a insertar
+		ELSE IF -> Si la posición en "x" de temp es mayor a la posición en "x" del nodo a insertar
+		*/
 		if temp.PosX == nuevoNodo.PosX {
+			/*
+			Se sustituyen la posición en "y" y el dato guardados en el temporal por los del nodo a insertar
+			*/
 			temp.PosY = nuevoNodo.PosY
 			temp.Dato = nuevoNodo.Dato
 			return temp
@@ -78,12 +134,21 @@ func (matriz *Matriz) insertarColumna(nuevoNodo *NodoMatriz, nodoRaiz *NodoMatri
 			piv = true
 			break
 		}
+		/*
+		Esta sería la condición del for para recorrer las columnas
+		IF -> Si el nodo a la derecha de temp es distinto de nil, seguir recorriendo
+		ELSE -> Si el nodo a la derecha es nil, parar el ciclo
+		*/
 		if temp.Siguiente != nil {
 			temp = temp.Siguiente
 		} else {
 			break
 		}
 	}
+	/*
+	IF -> para insertar un nodo de forma ordenada asignando sus apuntadores de la Izquierda y Derecha (insertar entre nodos)
+	ELSE -> para insertar el nodo (al final)
+	*/
 	if piv {
 		nuevoNodo.Siguiente = temp
 		nuevoNodo.Anterior = temp.Anterior
@@ -96,17 +161,25 @@ func (matriz *Matriz) insertarColumna(nuevoNodo *NodoMatriz, nodoRaiz *NodoMatri
 	return nuevoNodo
 }
 
-func (matriz *Matriz) nuevaColumna(x int, carnet_Tutor int, curso string) *NodoMatriz {
-	nuevoNodo := &NodoMatriz{PosX: x, PosY: -1, Dato: &Dato{Carnet_Tutor: carnet_Tutor, Carnet_Estudiante: 0, Curso: curso}}
-	columna := matriz.insertarColumna(nuevoNodo, matriz.Raiz)
-	return columna
-}
-
+/*
+Función para insertar un nodo en la matriz dispersa, asignando los apuntadores para las filas
+"Arriba" y "Abajo"
+*/
 func (matriz *Matriz) insertarFila(nuevoNodo *NodoMatriz, nodoRaiz *NodoMatriz) *NodoMatriz {
+	//Variable temporal que contiene el nodo encabezado de la columna o la raiz de la matriz
 	temp := nodoRaiz
+	//Para identificar si se va a insertar ordenado o no
 	piv := false
+	//Se recorren las filas de temp hacia abajo
 	for {
+		/*
+		IF -> Si la posición en "y" de temp es igual a la posición en "y" del nodo a insertar
+		ELSE IF -> Si la posición en "y" de temp es mayor a la posición en "y" del nodo a insertar
+		*/
 		if temp.PosY == nuevoNodo.PosY {
+			/*
+			Se sustituyen la posición en "x" y el dato guardados en el temporal por los del nodo a insertar
+			*/
 			temp.PosX = nuevoNodo.PosX
 			temp.Dato = nuevoNodo.Dato
 			return temp
@@ -114,12 +187,21 @@ func (matriz *Matriz) insertarFila(nuevoNodo *NodoMatriz, nodoRaiz *NodoMatriz) 
 			piv = true
 			break
 		}
+		/*
+		Esta sería la condición del for para recorrer las filas
+		IF -> Si el nodo abajo de temp es distinto de nil, seguir recorriendo
+		ELSE -> Si el nodo de abajo es nil, parar el ciclo
+		*/
 		if temp.Abajo != nil {
 			temp = temp.Abajo
 		} else {
 			break
 		}
 	}
+	/*
+	IF -> para insertar un nodo de forma ordenada asignando sus apuntadores de la Arriba y Abajo (insertar entre nodos)
+	ELSE -> para insertar el nodo (al final)
+	*/
 	if piv {
 		nuevoNodo.Abajo = temp
 		nuevoNodo.Arriba = temp.Arriba
@@ -132,12 +214,7 @@ func (matriz *Matriz) insertarFila(nuevoNodo *NodoMatriz, nodoRaiz *NodoMatriz) 
 	return nuevoNodo
 }
 
-func (matriz *Matriz) nuevaFila(y int, carnet_estudiante int, curso string) *NodoMatriz {
-	nuevoNodo := &NodoMatriz{PosX: -1, PosY: y, Dato: &Dato{Carnet_Tutor: 0, Carnet_Estudiante: carnet_estudiante, Curso: curso}}
-	fila := matriz.insertarFila(nuevoNodo, matriz.Raiz)
-	return fila
-}
-
+//Función que genera el reporte de asignaciones de acuerdo a la matriz dispersa
 func (matriz *Matriz) ReporteAsignaciones() {
 	texto := ""
 	nombre_archivo := "./matriz.dot"

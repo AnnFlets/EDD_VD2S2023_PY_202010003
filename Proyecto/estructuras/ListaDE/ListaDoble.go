@@ -14,6 +14,7 @@ type ListaDoble struct {
 	Tamanio int
 }
 
+//Función para leer el archivo csv con los datos de los estudiantes y agregarlos a la lista doble
 func (lista *ListaDoble) LeerCSVEstudiantes(ruta string){
 	archivo, err := os.Open(ruta)
 	if err != nil{
@@ -22,9 +23,11 @@ func (lista *ListaDoble) LeerCSVEstudiantes(ruta string){
 	}
 	defer archivo.Close()
 	contenido := csv.NewReader(archivo)
+	//Especificar el delimitador del archivo
 	contenido.Comma = ','
 	encabezado := true
 	for {
+		//Lee una línea del archivo
 		linea, err := contenido.Read()
 		if err == io.EOF{
 			break
@@ -43,6 +46,7 @@ func (lista *ListaDoble) LeerCSVEstudiantes(ruta string){
 	fmt.Println("Estudiantes cargados con éxito")
 }
 
+//Función para insertar un nuevo estudiante a la lista doble
 func (lista *ListaDoble) InsertarEstudiante(carnet int, nombre string) {
 	nuevoEstudiante := &Estudiante{Carnet: carnet, Nombre: nombre}
 	nuevoNodo := &NodoListaDoble{Estudiante: nuevoEstudiante, Siguiente: nil, Anterior: nil}
@@ -59,6 +63,7 @@ func (lista *ListaDoble) InsertarEstudiante(carnet int, nombre string) {
 	lista.Tamanio++
 }
 
+//Función que busca el carnet enviado en la lista, retornando true si lo encuentra y false si no
 func (lista *ListaDoble) BuscarEstudiante(carnet string, contrasena string) bool{
 	if lista.Tamanio == 0{
 		return false
@@ -74,6 +79,7 @@ func (lista *ListaDoble) BuscarEstudiante(carnet string, contrasena string) bool
 	return false
 }
 
+//Función para generar el reporte de los estudiantes existentes en la lista doblemente enlazada
 func (lista *ListaDoble) ReporteEstudiantes(){
 	nombre_archivo := "./listadoble.dot"
 	nombre_imagen := "./listadoble.jpg"

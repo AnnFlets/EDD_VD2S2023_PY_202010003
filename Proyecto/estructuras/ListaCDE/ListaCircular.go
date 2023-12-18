@@ -11,6 +11,7 @@ type ListaCircular struct{
 	Tamanio int
 }
 
+//Función para insertar un nuevo tutor a la lista circular, ordenando estos por número de carnet
 func (lista *ListaCircular) InsertarTutor(carnet int, nombre string, curso string, nota int){
 	nuevoTutor := &Tutor{Carnet: carnet, Nombre: nombre, Curso: curso, Nota: nota}
 	nuevoNodo := &NodoListaCircular{Tutor: nuevoTutor, Siguiente: nil, Anterior: nil}
@@ -22,15 +23,22 @@ func (lista *ListaCircular) InsertarTutor(carnet int, nombre string, curso strin
 	}else{
 		aux := lista.Inicio
 		contador := 1
+		//Recorre hasta llegar al último nodo
 		for contador < lista.Tamanio{
+			//Si el carnet del tutor al inicio de la lista es mayor al carnet del tutor a insertar
 			if lista.Inicio.Tutor.Carnet > carnet{
 				nuevoNodo.Siguiente = lista.Inicio
 				nuevoNodo.Anterior = lista.Inicio.Anterior
 				lista.Inicio.Anterior.Siguiente = nuevoNodo
 				lista.Inicio.Anterior = nuevoNodo
+				lista.Inicio = nuevoNodo
 				lista.Tamanio++
 				return
 			}
+			/*
+			IF -> Si el carnet del tutor en la lista es menor al carnet del tutor a insertar
+			ELSE -> Si el carnet del tutor en la lista es igual o mayor al carnet del tutor a insertar
+			*/
 			if aux.Tutor.Carnet < carnet{
 				aux = aux.Siguiente
 			}else{
@@ -43,6 +51,7 @@ func (lista *ListaCircular) InsertarTutor(carnet int, nombre string, curso strin
 			}
 			contador++
 		}
+		//Si el carnet del tutor del último nodo es mayor al carnet del tutor a insertar
 		if aux.Tutor.Carnet > carnet {
 			nuevoNodo.Anterior = aux.Anterior
 			aux.Anterior.Siguiente = nuevoNodo
@@ -51,6 +60,7 @@ func (lista *ListaCircular) InsertarTutor(carnet int, nombre string, curso strin
 			lista.Tamanio++
 			return
 		}
+		//Si el carnet del tutor del último nodo es igual o menor al carnet del tutor a insertar
 		nuevoNodo.Anterior = aux
 		nuevoNodo.Siguiente = lista.Inicio
 		aux.Siguiente = nuevoNodo
@@ -59,6 +69,7 @@ func (lista *ListaCircular) InsertarTutor(carnet int, nombre string, curso strin
 	}
 }
 
+//Función para imprimir el curso y nombre de los tutores presentes en la lista circular doble
 func (lista *ListaCircular) MostrarTutores(){
 	aux := lista.Inicio
 	contador := 0
@@ -69,6 +80,7 @@ func (lista *ListaCircular) MostrarTutores(){
 	}
 }
 
+//Función que busca al tutor del curso enviado y retorna el nodo correspondiente a este o nil
 func (lista *ListaCircular) BuscarTutor(curso string) *NodoListaCircular{
 	aux := lista.Inicio
 	contador := 0
@@ -82,6 +94,7 @@ func (lista *ListaCircular) BuscarTutor(curso string) *NodoListaCircular{
 	return nil
 }
 
+//Función que busca el curso enviado en la lista, retornando true si lo encuentra y false si no
 func (lista *ListaCircular) BuscarCurso(curso string) bool {
 	if lista.Tamanio == 0 {
 		return false
@@ -99,6 +112,7 @@ func (lista *ListaCircular) BuscarCurso(curso string) bool {
 	return false
 }
 
+//Función para generar el reporte de los tutores existentes en la lista circular doblemente enlazada
 func (lista *ListaCircular) ReporteTutores() {
 	nombre_archivo := "./listadoblecircular.dot"
 	nombre_imagen := "./listadoblecircular.jpg"
