@@ -24,7 +24,7 @@ func fechaHoraActual() string {
 	return fecha_hora_formato
 }
 
-
+//Función para crear el árbol de Merkle con los datos almacenados en los data blocks
 func (arbol *ArbolMerkle) GenerarArbol() {
 	nivel := 1
 	//Se ejecuta el ciclo hasta que la cantidad de bloques del árbol sea menor a los valores de la potencia de 2 que se van obteniendo
@@ -41,7 +41,7 @@ func (arbol *ArbolMerkle) GenerarArbol() {
 //Función para agregar un bloque de datos a la lista doblemente enlazada del árbol de Merkle.
 func (arbol *ArbolMerkle) AgregarBloque(accion string, nombre string, carnet_tutor int) {
 	nuevo_registro := &InformacionBloque{FechaHora: fechaHoraActual(), Accion: accion, Nombre: nombre, Tutor: carnet_tutor}
-	nuevo_bloque := &NodoBloqueDatos{Informacion: nuevo_registro}
+	nuevo_bloque := &NodoBloqueDatos{Valor: nuevo_registro}
 	/*
 	IF -> No hay elementos en la lista
 	ELSE -> Hay elementos en la lista
@@ -66,7 +66,7 @@ func (arbol *ArbolMerkle) generarHash() {
 	aux := arbol.BloqueDatos
 	//Se recorren los data block, se concatena la información de estos, se encripta con SHA3, se crea el nodo_hoja que contendrá el hash del bloque de datos correspondiente y al arreglo de nodos se insertan los nodos hojas que se creen. 
 	for aux != nil {
-		concatenacion := aux.Informacion.FechaHora + aux.Informacion.Accion + aux.Informacion.Nombre + strconv.Itoa(aux.Informacion.Tutor)
+		concatenacion := aux.Valor.FechaHora + aux.Valor.Accion + aux.Valor.Nombre + strconv.Itoa(aux.Valor.Tutor)
 		encriptado := arbol.encriptarSHA3(concatenacion)
 		nodo_hoja := &NodoMerkle{Valor: encriptado, Bloque: aux}
 		arrayNodos = append(arrayNodos, nodo_hoja)
@@ -112,8 +112,8 @@ func (arbol *ArbolMerkle) crearArbol(arrayNodos []*NodoMerkle) *NodoMerkle {
 //Función para generar el reporte del árbol de Merkle en .dot y .jpg
 func (arbol *ArbolMerkle) ReporteMerkleLibros(nombre string) {
 	cadena := ""
-	nombre_archivo := "./" + nombre + ".dot"
-	nombre_imagen := nombre + ".jpg"
+	nombre_archivo := "./Reporte/arbolMerkle.dot"
+	nombre_imagen := "./Reporte/arbolMerkle.jpg"
 	if arbol.Raiz != nil {
 		cadena += "digraph arbol { node [shape=box];"
 		cadena += arbol.retornarValoresArbol(arbol.Raiz, 0)
@@ -148,7 +148,7 @@ func (arbol *ArbolMerkle) retornarValoresArbol(raiz *NodoMerkle, indice int) str
 		cadena += raiz.Valor[:20]
 		cadena += "\" -> "
 		cadena += "\""
-		cadena += raiz.Bloque.Informacion.FechaHora + "\n" + raiz.Bloque.Informacion.Accion + "\n" + raiz.Bloque.Informacion.Nombre + "\n" + strconv.Itoa(raiz.Bloque.Informacion.Tutor)
+		cadena += raiz.Bloque.Valor.FechaHora + "\n" + raiz.Bloque.Valor.Accion + "\n" + raiz.Bloque.Valor.Nombre + "\n" + strconv.Itoa(raiz.Bloque.Valor.Tutor)
 		cadena += "\" [dir=back];\n "
 	}
 	return cadena

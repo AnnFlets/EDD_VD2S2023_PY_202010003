@@ -13,7 +13,7 @@ type ArbolB struct {
 //Función para insertar un tutor en una rama del árbol B
 func (arbol *ArbolB) InsertarTutor(carnet int, nombre string, curso string, password string) {
 	tutor := &Tutor{Carnet: carnet, Nombre: nombre, Curso: curso, Password: password}
-	nuevoNodo := &NodoB{Tutor: tutor}
+	nuevoNodo := &NodoB{Valor: tutor}
 	/*
 	IF -> Si la raíz del árbol es nula, crear la rama raiz e insertar el nodo con los datos recibidos
 	ELSE -> Si la raíz del árbol no es nula
@@ -58,9 +58,9 @@ func (arbol *ArbolB) insertarRama(nodo *NodoB, rama *RamaB) *NodoB {
 			ELSE IF 1 -> Si el curso del nodo a insertar es menor al del temporal, se recorre el subárbol izquierdo
 			ELSE IF 2 -> Si se llega al último nodo de la rama, se recorre el subárbol derecho
 			*/
-			if nodo.Tutor.Curso == temp.Tutor.Curso {
+			if nodo.Valor.Curso == temp.Valor.Curso {
 				return nil
-			} else if nodo.Tutor.Curso < temp.Tutor.Curso {
+			} else if nodo.Valor.Curso < temp.Valor.Curso {
 				obj := arbol.insertarRama(nodo, temp.Izquierdo)
 				//Si es distinto de nil, es porque se realizó una división
 				if obj != nil {
@@ -91,7 +91,7 @@ func (arbol *ArbolB) insertarRama(nodo *NodoB, rama *RamaB) *NodoB {
 func (arbol *ArbolB) dividir(rama *RamaB) *NodoB {
 	tutor := &Tutor{Carnet: 0, Nombre: "", Curso: "", Password: ""}
 	//Nodo temporal, que contendrá a la raiz de la división
-	val := &NodoB{Tutor: tutor}
+	val := &NodoB{Valor: tutor}
 	//Auxiliar para recorrer la lista (la rama)
 	aux := rama.Primero
 	//Rama derecha e izquierda auxiliares para la división
@@ -109,7 +109,7 @@ func (arbol *ArbolB) dividir(rama *RamaB) *NodoB {
 		*/
 		if contador < 2 {
 			//Copia del primer nodo de la rama
-			temp := &NodoB{Tutor: aux.Tutor}
+			temp := &NodoB{Valor: aux.Valor}
 			temp.Izquierdo = aux.Izquierdo
 			if contador == 1 {
 				temp.Derecho = aux.Siguiente.Izquierdo
@@ -121,10 +121,10 @@ func (arbol *ArbolB) dividir(rama *RamaB) *NodoB {
 			rizquierda.InsertarNodo(temp)
 		} else if contador == 2 {
 			//Copia del nodo medio
-			val.Tutor = aux.Tutor
+			val.Valor = aux.Valor
 		} else {
 			//Copia del último nodo de la rama
-			temp := &NodoB{Tutor: aux.Tutor}
+			temp := &NodoB{Valor: aux.Valor}
 			temp.Izquierdo = aux.Izquierdo
 			temp.Derecho = aux.Derecho
 			//Verificar si es un nodo hoja o un nodo raiz
@@ -135,7 +135,7 @@ func (arbol *ArbolB) dividir(rama *RamaB) *NodoB {
 		}
 		aux = aux.Siguiente
 	}
-	nuevo := &NodoB{Tutor: val.Tutor}
+	nuevo := &NodoB{Valor: val.Valor}
 	nuevo.Derecho = rderecha
 	nuevo.Izquierdo = rizquierda
 	/*
@@ -171,7 +171,7 @@ func (arbol *ArbolB) buscarEnArbol(raiz *NodoB, carnet_tutor int, listaSimple *L
 			if aux.Izquierdo != nil {
 				arbol.buscarEnArbol(aux.Izquierdo.Primero, carnet_tutor, listaSimple)
 			}
-			if aux.Tutor.Carnet == carnet_tutor {
+			if aux.Valor.Carnet == carnet_tutor {
 				listaSimple.InsertarTutor(aux)
 			}
 			if aux.Siguiente == nil {
@@ -195,9 +195,9 @@ func (arbol *ArbolB) GuardarLibro(raiz *NodoB, nombre string, contenido string, 
 				arbol.GuardarLibro(aux.Izquierdo.Primero, nombre, contenido, carnet)
 			}
 			//Si el carnet del tutor del aux que recorre el árbol es igual al carnet enviado como parámetro
-			if aux.Tutor.Carnet == carnet {
+			if aux.Valor.Carnet == carnet {
 				//Se añade al arreglo de libros el libro a guardar
-				raiz.Tutor.Libros = append(raiz.Tutor.Libros, &Libro{Nombre: nombre, Contenido: contenido, Estado: 1})
+				raiz.Valor.Libros = append(raiz.Valor.Libros, &Libro{Nombre: nombre, Contenido: contenido, Estado: 1, Curso: raiz.Valor.Curso, Tutor: raiz.Valor.Carnet})
 				fmt.Println("Registré el libro")
 				return
 			}
@@ -223,9 +223,9 @@ func (arbol *ArbolB) GuardarPublicacion(raiz *NodoB, contenido string, carnet in
 				arbol.GuardarPublicacion(aux.Izquierdo.Primero, contenido, carnet)
 			}
 			//Si el carnet del tutor del aux que recorre el árbol es igual al carnet enviado como parámetro
-			if aux.Tutor.Carnet == carnet {
+			if aux.Valor.Carnet == carnet {
 				//Se añade al arreglo de publicaciones la publicación a guardar
-				raiz.Tutor.Publicaciones = append(raiz.Tutor.Publicaciones, &Publicacion{Contenido: contenido})
+				raiz.Valor.Publicaciones = append(raiz.Valor.Publicaciones, &Publicacion{Contenido: contenido, Curso: raiz.Valor.Curso})
 				fmt.Println("Registré la publicación")
 				return
 			}
@@ -240,11 +240,57 @@ func (arbol *ArbolB) GuardarPublicacion(raiz *NodoB, contenido string, carnet in
 	}
 }
 
+func (arbol *ArbolB) VerLibroAdmin(raiz *NodoB, listaSimple *ListaSimple) {
+	if raiz != nil {
+		aux := raiz
+		for aux != nil {
+			if aux.Izquierdo != nil {
+				arbol.VerLibroAdmin(aux.Izquierdo.Primero, listaSimple)
+			}
+			if len(aux.Valor.Libros) > 0 {
+				listaSimple.InsertarTutor(aux)
+			}
+			if aux.Siguiente == nil {
+				if aux.Derecho != nil {
+					arbol.VerLibroAdmin(aux.Derecho.Primero, listaSimple)
+				}
+			}
+			aux = aux.Siguiente
+		}
+	}
+}
+
+func (arbol *ArbolB) ActualizarLibro(raiz *NodoB, nombre string, curso string, tipo int) {
+	if raiz != nil {
+		aux := raiz
+		for aux != nil {
+			if aux.Izquierdo != nil {
+				arbol.ActualizarLibro(aux.Izquierdo.Primero, nombre, curso, tipo)
+			}
+			if aux.Valor.Curso == curso {
+				for i := 0; i < len(aux.Valor.Libros); i++ {
+					if aux.Valor.Libros[i].Nombre == nombre {
+						aux.Valor.Libros[i].Estado = tipo
+					}
+				}
+				fmt.Println("Actualizado libro")
+				return
+			}
+			if aux.Siguiente == nil {
+				if aux.Derecho != nil {
+					arbol.ActualizarLibro(aux.Derecho.Primero, nombre, curso, tipo)
+				}
+			}
+			aux = aux.Siguiente
+		}
+	}
+}
+
 //Función para generar el reporte del árbol B en .dot y .jpg
 func (arbol *ArbolB) ReporteArbolBTutores(nombre string) {
 	cadena := ""
-	nombre_archivo := "./" + nombre + ".dot"
-	nombre_imagen := nombre + ".jpg"
+	nombre_archivo := "./Reporte/" + nombre + ".dot"
+	nombre_imagen := "./Reporte/" + nombre + ".jpg"
 	if arbol.Raiz != nil {
 		cadena += "digraph arbol { \nnode[shape=record]\n"
 		cadena += arbol.grafo(arbol.Raiz.Primero)
@@ -280,7 +326,7 @@ func (arbol *ArbolB) grafoRamas(rama *NodoB) string {
 	dot := ""
 	if rama != nil {
 		aux := rama
-		dot = dot + "R" + rama.Tutor.Curso + "[label=\""
+		dot = dot + "R" + rama.Valor.Curso + "[label=\""
 		r := 1
 		for aux != nil {
 			if aux.Izquierdo != nil {
@@ -288,9 +334,9 @@ func (arbol *ArbolB) grafoRamas(rama *NodoB) string {
 				r++
 			}
 			if aux.Siguiente != nil {
-				dot = dot + aux.Tutor.Curso + "|"
+				dot = dot + aux.Valor.Curso + "|"
 			} else {
-				dot = dot + aux.Tutor.Curso
+				dot = dot + aux.Valor.Curso
 				if aux.Derecho != nil {
 					dot = dot + "|<C" + strconv.Itoa(r) + ">"
 				}
@@ -306,17 +352,17 @@ func (arbol *ArbolB) conexionRamas(rama *NodoB) string {
 	dot := ""
 	if rama != nil {
 		aux := rama
-		actual := "R" + rama.Tutor.Curso
+		actual := "R" + rama.Valor.Curso
 		r := 1
 		for aux != nil {
 			if aux.Izquierdo != nil {
-				dot += actual + ":C" + strconv.Itoa(r) + " -> " + "R" + aux.Izquierdo.Primero.Tutor.Curso + ";\n"
+				dot += actual + ":C" + strconv.Itoa(r) + " -> " + "R" + aux.Izquierdo.Primero.Valor.Curso + ";\n"
 				r++
 				dot += arbol.conexionRamas(aux.Izquierdo.Primero)
 			}
 			if aux.Siguiente == nil {
 				if aux.Derecho != nil {
-					dot += actual + ":C" + strconv.Itoa(r) + " -> " + "R" + aux.Derecho.Primero.Tutor.Curso + ";\n"
+					dot += actual + ":C" + strconv.Itoa(r) + " -> " + "R" + aux.Derecho.Primero.Valor.Curso + ";\n"
 					r++
 					dot += arbol.conexionRamas(aux.Derecho.Primero)
 				}

@@ -4,10 +4,12 @@ type Libro struct {
 	Nombre    string
 	Contenido string
 	Estado    int
+	Curso     string
+	Tutor     int
 }
-
 type Publicacion struct {
 	Contenido string
+	Curso     string
 }
 
 type Tutor struct {
@@ -20,7 +22,7 @@ type Tutor struct {
 }
 
 type NodoB struct {
-	Tutor *Tutor
+	Valor *Tutor
 	//Punteros para movernos en el arreglo (En el nodo, de izquierda a derecha)
 	Siguiente *NodoB
 	Anterior  *NodoB

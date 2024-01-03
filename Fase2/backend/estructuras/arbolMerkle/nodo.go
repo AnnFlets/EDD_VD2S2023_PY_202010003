@@ -12,7 +12,7 @@ type InformacionBloque struct {
 type NodoBloqueDatos struct {
 	Siguiente *NodoBloqueDatos
 	Anterior  *NodoBloqueDatos
-	Informacion *InformacionBloque
+	Valor *InformacionBloque
 }
 
 //Estructura para los nodos del árbol de Merkle

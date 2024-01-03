@@ -24,7 +24,7 @@ func (grafo *Grafo) InsertarCurso(curso string, post string) {
 
 // Función que inserta un curso, en una nueva fila, en la columna principal de la lista de adyacencia.
 func (grafo *Grafo) insertarFila(curso string) {
-	nuevoNodo := &NodoGrafo{Curso: curso}
+	nuevoNodo := &NodoGrafo{Valor: curso}
 	/*
 		IF -> Si la lista de adyacencia está vacía
 		ELSE -> Si la lista de adyacencia tiene elementos
@@ -35,7 +35,7 @@ func (grafo *Grafo) insertarFila(curso string) {
 		//Recorre la columna principal de la lista de adyacencia
 		aux := grafo.Principal
 		for aux.Abajo != nil {
-			if aux.Curso == curso {
+			if aux.Valor == curso {
 				return
 			}
 			aux = aux.Abajo
@@ -46,12 +46,12 @@ func (grafo *Grafo) insertarFila(curso string) {
 
 // Función que inserta un curso post requisito en la lista enlazada de un curso determinado.
 func (grafo *Grafo) insertarColumna(curso string, post string) {
-	nuevoNodo := &NodoGrafo{Curso: post}
+	nuevoNodo := &NodoGrafo{Valor: post}
 	/*
 		IF -> Si la lista de adyacencia no está vacía y el curso del primer elemento es igual al curso recibido
 		ELSE -> Si la lista de adyacencia está vacía o el curso del primer elemento no es igual al curso recibido
 	*/
-	if grafo.Principal != nil && grafo.Principal.Curso == curso {
+	if grafo.Principal != nil && grafo.Principal.Valor == curso {
 		//Se inserta el curso post requisito en la columna principal de la lista de adyacencia
 		grafo.insertarFila(post)
 		aux := grafo.Principal
@@ -66,7 +66,7 @@ func (grafo *Grafo) insertarColumna(curso string, post string) {
 		aux := grafo.Principal
 		//Se busca el curso en la columna principal de la lista de adyacencia
 		for aux != nil {
-			if aux.Curso == curso {
+			if aux.Valor == curso {
 				break
 			}
 			aux = aux.Abajo
@@ -84,10 +84,10 @@ func (grafo *Grafo) insertarColumna(curso string, post string) {
 // Función para generar el reporte del grafo dirigido con los cursos guardados en .dot y .jpg
 func (grafo *Grafo) ReporteGrafoCursos(nombre string) {
 	cadena := ""
-	nombre_archivo := "./" + nombre + ".dot"
-	nombre_imagen := nombre + ".jpg"
+	nombre_archivo := "./Reporte/" + nombre + ".dot"
+	nombre_imagen := "./Reporte/" + nombre + ".jpg"
 	if grafo.Principal != nil {
-		cadena += "digraph grafoDirigido{ \n rankdir=LR; \n node [shape=box]; layout=neato; \n nodo" + grafo.Principal.Curso + "[label=\"" + grafo.Principal.Curso + "\"]; \n"
+		cadena += "digraph grafoDirigido{ \n rankdir=LR; \n node [shape=box]; layout=neato; \n nodo" + grafo.Principal.Valor + "[label=\"" + grafo.Principal.Valor + "\"]; \n"
 		cadena += "node [shape = ellipse]; \n"
 		cadena += grafo.retornarValoresMatriz()
 		cadena += "\n}"
@@ -105,7 +105,7 @@ func (grafo *Grafo) retornarValoresMatriz() string {
 	/*CREACION DE NODOS CON LABELS*/
 	for aux != nil {
 		for aux1 != nil {
-			cadena += "nodo" + aux1.Curso + "[label=\"" + aux1.Curso + "\" ]; \n"
+			cadena += "nodo" + aux1.Valor + "[label=\"" + aux1.Valor + "\" ]; \n"
 			aux1 = aux1.Siguiente
 		}
 		if aux != nil {
@@ -119,8 +119,8 @@ func (grafo *Grafo) retornarValoresMatriz() string {
 	/*CREACION DE NODOS CON LABELS*/
 	for aux != nil {
 		for aux1 != nil {
-			cadena += "nodo" + aux.Curso + " -> "
-			cadena += "nodo" + aux1.Curso + "[len=1.00]; \n"
+			cadena += "nodo" + aux.Valor + " -> "
+			cadena += "nodo" + aux1.Valor + "[len=1.00]; \n"
 			aux1 = aux1.Siguiente
 		}
 		if aux.Abajo != nil {

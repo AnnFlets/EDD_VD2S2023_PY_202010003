@@ -3,7 +3,7 @@ package grafo
 type NodoGrafo struct {
 	Siguiente *NodoGrafo
 	Abajo     *NodoGrafo
-	Curso     string
+	Valor     string
 }
 
 type PeticionGrafo struct {

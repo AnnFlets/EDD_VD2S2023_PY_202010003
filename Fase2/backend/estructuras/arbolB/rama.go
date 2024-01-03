@@ -23,7 +23,7 @@ func (rama *RamaB) InsertarNodo(nuevoNodo *NodoB) {
 			ELSE IF 1 -> Si el segundo nodo de la rama es distinto de nulo (está ocupado)
 			ELSE IF 2 -> Si el segundo nodo de la rama es igual a nulo
 		*/
-		if nuevoNodo.Tutor.Curso < rama.Primero.Tutor.Curso {
+		if nuevoNodo.Valor.Curso < rama.Primero.Valor.Curso {
 			nuevoNodo.Siguiente = rama.Primero
 			rama.Primero.Izquierdo = nuevoNodo.Derecho
 			rama.Primero.Anterior = nuevoNodo
@@ -33,7 +33,7 @@ func (rama *RamaB) InsertarNodo(nuevoNodo *NodoB) {
 				IF -> Si el curso del segundo nodo de la rama es mayor al curso del nuevoNodo a insertar (insertar entre nodos)
 				ELSE -> Si el curso del segundo nodo de la rama es menor o igual al curso del nuevoNodo a insertar (insertar al final)
 			*/
-			if rama.Primero.Siguiente.Tutor.Curso > nuevoNodo.Tutor.Curso {
+			if rama.Primero.Siguiente.Valor.Curso > nuevoNodo.Valor.Curso {
 				nuevoNodo.Siguiente = rama.Primero.Siguiente
 				nuevoNodo.Anterior = rama.Primero
 				rama.Primero.Siguiente.Izquierdo = nuevoNodo.Derecho

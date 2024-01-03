@@ -1,0 +1,13 @@
+digraph arbol { node [shape=box];"dc364a0ee625b8e87420" [dir=back];
+"dc364a0ee625b8e87420" -> "8edc59e26caf9cacc0b2" [dir=back];
+"8edc59e26caf9cacc0b2" -> "03-01-2024::14:57:41
+Aceptado
+[EDD]HC_Fase1.pdf
+202000869" [dir=back];
+ "dc364a0ee625b8e87420" -> "0f99e4fef54a3c912dac" [dir=back];
+"0f99e4fef54a3c912dac" -> "03-01-2024::14:57:46
+2
+nulo
+0" [dir=back];
+ {rank=same"8edc59e26caf9cacc0b2" -> "0f99e4fef54a3c912dac" [style=invis]}; 
+}

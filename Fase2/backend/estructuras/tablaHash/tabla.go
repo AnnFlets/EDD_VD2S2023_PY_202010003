@@ -140,7 +140,8 @@ func (tabla *TablaHash) nuevoIndice(nuevo_indice int) int {
 	if nuevo_indice < tabla.Capacidad {
 		nueva_pos = nuevo_indice
 	} else {
-		nueva_pos = tabla.nuevoIndice(nuevo_indice - tabla.Capacidad)
+		nueva_pos = nuevo_indice - tabla.Capacidad
+		nueva_pos = tabla.nuevoIndice(nueva_pos)
 	}
 	return nueva_pos
 }
@@ -192,6 +193,7 @@ func (tabla *TablaHash) BuscarEstudiante(carnet string, password string) bool {
 	return false
 }
 
+//Función para retornar un arreglo con la información de los estudiantes almacenados en la tabla hash.
 func (tabla *TablaHash) ConvertirArreglo() []NodoHash {
 	var arrays []NodoHash
 	if tabla.Utilizacion > 0 {
@@ -202,4 +204,36 @@ func (tabla *TablaHash) ConvertirArreglo() []NodoHash {
 		}
 	}
 	return arrays
+}
+
+//Función que retorna al estudiante de la tabla hash con número de carnet igual al recibido como parámetro.
+func (tabla *TablaHash) BuscarSesion(carnet string) *Estudiante {
+	temp, err := strconv.Atoi(carnet)
+	if err != nil {
+		return nil
+	}
+	indice := tabla.calcularIndice(temp)
+	if indice < tabla.Capacidad {
+		if usuario, existe := tabla.Tabla[indice]; existe {
+			if usuario.Estudiante.Carnet == temp {
+				return usuario.Estudiante
+			} else {
+				contador := 1
+				indice = tabla.recalcularIndice(temp, contador)
+				for {
+					if usuario, existe := tabla.Tabla[indice]; existe {
+						if usuario.Estudiante.Carnet == temp {
+							return usuario.Estudiante
+						} else {
+							contador++
+							indice = tabla.recalcularIndice(temp, contador)
+						}
+					} else {
+						return nil
+					}
+				}
+			}
+		}
+	}
+	return nil
 }
